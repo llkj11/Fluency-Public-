@@ -128,20 +128,30 @@ extension TranscriptionService {
 // MARK: - API Key Storage (UserDefaults - persists with stable bundle ID)
 
 class KeychainHelper {
-    private static let apiKeyKey = "com.fluency.openai-api-key"
+    enum APIKeyType {
+        case openAI
+        case gemini
+        
+        var storageKey: String {
+            switch self {
+            case .openAI: return "com.fluency.openai-api-key"
+            case .gemini: return "com.fluency.gemini-api-key"
+            }
+        }
+    }
     
-    static func saveAPIKey(_ key: String) {
-        UserDefaults.standard.set(key, forKey: apiKeyKey)
+    static func saveAPIKey(_ key: String, for type: APIKeyType = .openAI) {
+        UserDefaults.standard.set(key, forKey: type.storageKey)
         UserDefaults.standard.synchronize()
-        print("✅ API key saved")
+        print("✅ API key saved for \(type)")
     }
     
-    static func getAPIKey() -> String? {
-        return UserDefaults.standard.string(forKey: apiKeyKey)
+    static func getAPIKey(for type: APIKeyType = .openAI) -> String? {
+        return UserDefaults.standard.string(forKey: type.storageKey)
     }
     
-    static func deleteAPIKey() {
-        UserDefaults.standard.removeObject(forKey: apiKeyKey)
+    static func deleteAPIKey(for type: APIKeyType = .openAI) {
+        UserDefaults.standard.removeObject(forKey: type.storageKey)
         UserDefaults.standard.synchronize()
     }
 }

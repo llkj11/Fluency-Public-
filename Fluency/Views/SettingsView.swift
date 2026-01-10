@@ -5,7 +5,9 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var apiKey: String = ""
+    @State private var geminiAPIKey: String = ""
     @State private var showingAPIKey = false
+    @State private var showingGeminiAPIKey = false
     @State private var launchAtLogin = false
     @State private var showSaveConfirmation = false
     @State private var selectedProvider: TranscriptionProvider = .openAI
@@ -45,14 +47,14 @@ struct SettingsView: View {
                                 .textFieldStyle(.roundedBorder)
                                 .font(.system(.body, design: .monospaced))
                                 .onChange(of: apiKey) { _, newValue in
-                                    autoSaveAPIKey(newValue)
+                                    autoSaveAPIKey(newValue, type: .openAI)
                                 }
                         } else {
                             SecureField("sk-...", text: $apiKey)
                                 .textFieldStyle(.roundedBorder)
                                 .font(.system(.body, design: .monospaced))
                                 .onChange(of: apiKey) { _, newValue in
-                                    autoSaveAPIKey(newValue)
+                                    autoSaveAPIKey(newValue, type: .openAI)
                                 }
                         }
 
@@ -95,6 +97,58 @@ struct SettingsView: View {
                                 .controlSize(.small)
                         }
                     }
+                    
+                    Divider()
+                    
+                    Text("Gemini API Key")
+                        .font(.headline)
+
+                    HStack {
+                        if showingGeminiAPIKey {
+                            TextField("Paste key...", text: $geminiAPIKey)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.system(.body, design: .monospaced))
+                                .onChange(of: geminiAPIKey) { _, newValue in
+                                    autoSaveAPIKey(newValue, type: .gemini)
+                                }
+                        } else {
+                            SecureField("Paste key...", text: $geminiAPIKey)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.system(.body, design: .monospaced))
+                                .onChange(of: geminiAPIKey) { _, newValue in
+                                    autoSaveAPIKey(newValue, type: .gemini)
+                                }
+                        }
+
+                        Button {
+                            showingGeminiAPIKey.toggle()
+                        } label: {
+                            Image(systemName: showingGeminiAPIKey ? "eye.slash" : "eye")
+                        }
+                        .buttonStyle(.borderless)
+                    }
+
+                    HStack {
+                        if !geminiAPIKey.isEmpty {
+                            Label("Saved", systemImage: "checkmark.circle.fill")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        } else {
+                            Text("Enter your Google Gemini API key")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        // TODO: Implement verifyGeminiAPIKey logic
+                        
+                        if !geminiAPIKey.isEmpty {
+                            Button("Clear", role: .destructive) {
+                                clearAPIKey(type: .gemini)
+                            }
+                        }
+                    }
 
                     if showSaveConfirmation {
                         Label("API key saved", systemImage: "checkmark.circle.fill")
@@ -118,8 +172,11 @@ struct SettingsView: View {
             } header: {
                 Text("API Configuration")
             } footer: {
-                Link("Get an API key from OpenAI", destination: URL(string: "https://platform.openai.com/api-keys")!)
-                    .font(.caption)
+                VStack(alignment: .leading, spacing: 4) {
+                    Link("Get an OpenAI API key", destination: URL(string: "https://platform.openai.com/api-keys")!)
+                    Link("Get a Gemini API key", destination: URL(string: "https://aistudio.google.com/app/apikey")!)
+                }
+                .font(.caption)
             }
             
             Section {
@@ -161,6 +218,11 @@ struct SettingsView: View {
                     .onChange(of: selectedTTSProvider) { _, newValue in
                         if newValue.isAvailable {
                             TTSService.selectedProvider = newValue
+                            // Reset voice to default for new provider
+                            if let firstVoice = TTSVoice.allCases.first(where: { $0.provider == newValue }) {
+                                selectedVoice = firstVoice
+                                TTSService.selectedVoice = firstVoice
+                            }
                         }
                     }
                     
@@ -168,7 +230,7 @@ struct SettingsView: View {
                     
                     // Voice selection
                     Picker("Voice", selection: $selectedVoice) {
-                        ForEach(TTSVoice.allCases, id: \.self) { voice in
+                        ForEach(TTSVoice.allCases.filter { $0.provider == selectedTTSProvider }, id: \.self) { voice in
                             Text(voice.displayName)
                                 .tag(voice)
                         }
@@ -301,8 +363,11 @@ struct SettingsView: View {
     }
 
     private func loadSettings() {
-        if let key = KeychainHelper.getAPIKey() {
+        if let key = KeychainHelper.getAPIKey(for: .openAI) {
             apiKey = key
+        }
+        if let key = KeychainHelper.getAPIKey(for: .gemini) {
+            geminiAPIKey = key
         }
         // Check launch at login status
         launchAtLogin = SMAppService.mainApp.status == .enabled
@@ -313,12 +378,14 @@ struct SettingsView: View {
         customPresets = TTSService.customPresets
     }
     
-    private func autoSaveAPIKey(_ key: String) {
+    private func autoSaveAPIKey(_ key: String, type: KeychainHelper.APIKeyType = .openAI) {
         // Auto-save when the key changes (debounced effectively by onChange)
         if !key.isEmpty {
-            KeychainHelper.saveAPIKey(key)
+            KeychainHelper.saveAPIKey(key, for: type)
         }
-        verificationResult = nil
+        if type == .openAI {
+            verificationResult = nil
+        }
     }
 
     private func saveAPIKey() {
@@ -355,9 +422,13 @@ struct SettingsView: View {
         }
     }
 
-    private func clearAPIKey() {
-        KeychainHelper.deleteAPIKey()
-        apiKey = ""
+    private func clearAPIKey(type: KeychainHelper.APIKeyType = .openAI) {
+        KeychainHelper.deleteAPIKey(for: type)
+        if type == .openAI {
+            apiKey = ""
+        } else {
+            geminiAPIKey = ""
+        }
     }
 
     private func setLaunchAtLogin(_ enabled: Bool) {
