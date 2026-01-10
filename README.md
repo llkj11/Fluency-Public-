@@ -5,8 +5,8 @@
 ## Features
 
 ### 🎙️ AI Dictation (Speech-to-Text)
-- **Global Hotkey**: Double-tap `Fn` to start listening instantly anywhere.
-- **Whisper Integration**: Uses high-accuracy transcription (via OpenAI) to convert speech to text.
+- **Global Hotkey**: Hold `Fn` key to speak, release to stop.
+- **GPT-4o Mini Integration**: Uses OpenAI's fast and accurate `gpt-4o-mini-transcribe` model.
 - **Smart Formatting**: Automatically handles punctuation and formatting.
 - **Auto-Paste**: Inserts transcribed text directly into your active application.
 
@@ -33,8 +33,7 @@
 
 | Feature | Action |
 | :--- | :--- |
-| **Start Dictation** | Double-tap `Fn` |
-| **Stop Dictation** | Tap `Fn` again (or wait for silence) |
+| **Dictate** | Hold `Fn`, speak, then release |
 | **Read Selected Text** | Highlight text, then hold `Fn` and press `Control` |
 | **Stop Reading** | Tap `Fn` |
 
