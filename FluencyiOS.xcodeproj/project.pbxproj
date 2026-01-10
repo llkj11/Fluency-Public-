@@ -1,0 +1,577 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		/* Main App */
+		01FLUENCYAPP001 /* FluencyiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE001; };
+		01FLUENCYAPP002 /* Transcription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE002; };
+		01FLUENCYAPP003 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE003; };
+		01FLUENCYAPP004 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE004; };
+		01FLUENCYAPP005 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE005; };
+		01FLUENCYAPP006 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE006; };
+		01FLUENCYAPP007 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE007; };
+		01FLUENCYAPP008 /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE008; };
+		01FLUENCYAPP009 /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE009; };
+		01FLUENCYAPP010 /* StatsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE010; };
+		01FLUENCYAPP011 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE011; };
+		01FLUENCYAPP012 /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE012; };
+		
+		/* Keyboard Extension */
+		01KEYBOARD001 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01KEYBOARDFILE001; };
+		01KEYBOARD002 /* FluencyKeyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 01KEYBOARDPROD001; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		01KEYBOARD003 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE007; };
+		01KEYBOARD004 /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE008; };
+		01KEYBOARD005 /* StatsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE010; };
+		01KEYBOARD006 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FLUENCYFILE011; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		01PROXYITEM001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01PROJECTROOT001;
+			proxyType = 1;
+			remoteGlobalIDString = 01KEYBOARDTARGET001;
+			remoteInfo = FluencyKeyboard;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		01COPYFILES001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				01KEYBOARD002 /* FluencyKeyboard.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		/* Main App Files */
+		01FLUENCYFILE001 /* FluencyiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluencyiOSApp.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE002 /* Transcription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcription.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE003 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE004 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE005 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE006 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE007 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE008 /* TranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionService.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE009 /* TTSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSService.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE010 /* StatsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsService.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE011 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE012 /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
+		01FLUENCYFILE013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01FLUENCYFILE014 /* FluencyiOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FluencyiOS.entitlements; sourceTree = "<group>"; };
+		
+		/* Keyboard Extension Files */
+		01KEYBOARDFILE001 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		01KEYBOARDFILE002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		
+		/* Products */
+		01FLUENCYPROD001 /* Fluency.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluency.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		01KEYBOARDPROD001 /* FluencyKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FluencyKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		01FRAMEWORKS001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01FRAMEWORKS002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01MAINGROUP001 = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYGROUP001 /* FluencyiOS */,
+				01KEYBOARDGROUP001 /* FluencyKeyboard */,
+				01PRODUCTSGROUP001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		01PRODUCTSGROUP001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYPROD001 /* Fluency.app */,
+				01KEYBOARDPROD001 /* FluencyKeyboard.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		01FLUENCYGROUP001 /* FluencyiOS */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYFILE001 /* FluencyiOSApp.swift */,
+				01MODELSGROUP001 /* Models */,
+				01VIEWSGROUP001 /* Views */,
+				01SERVICESGROUP001 /* Services */,
+				01RESOURCESGROUP001 /* Resources */,
+			);
+			path = FluencyiOS;
+			sourceTree = "<group>";
+		};
+		01MODELSGROUP001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYFILE002 /* Transcription.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		01VIEWSGROUP001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYFILE003 /* HomeView.swift */,
+				01FLUENCYFILE004 /* HistoryView.swift */,
+				01FLUENCYFILE005 /* StatsView.swift */,
+				01FLUENCYFILE006 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		01SERVICESGROUP001 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYFILE007 /* AudioRecorder.swift */,
+				01FLUENCYFILE008 /* TranscriptionService.swift */,
+				01FLUENCYFILE009 /* TTSService.swift */,
+				01FLUENCYFILE010 /* StatsService.swift */,
+				01FLUENCYFILE011 /* KeychainHelper.swift */,
+				01FLUENCYFILE012 /* SyncService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		01RESOURCESGROUP001 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				01FLUENCYFILE013 /* Info.plist */,
+				01FLUENCYFILE014 /* FluencyiOS.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		01KEYBOARDGROUP001 /* FluencyKeyboard */ = {
+			isa = PBXGroup;
+			children = (
+				01KEYBOARDFILE001 /* KeyboardViewController.swift */,
+				01KEYBOARDFILE002 /* Info.plist */,
+			);
+			path = FluencyKeyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		01FLUENCYTARGET001 /* FluencyiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01CONFIGLIST001;
+			buildPhases = (
+				01SOURCES001 /* Sources */,
+				01FRAMEWORKS001 /* Frameworks */,
+				01RESOURCES001 /* Resources */,
+				01COPYFILES001 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				01DEPENDENCY001,
+			);
+			name = FluencyiOS;
+			productName = FluencyiOS;
+			productReference = 01FLUENCYPROD001;
+			productType = "com.apple.product-type.application";
+		};
+		01KEYBOARDTARGET001 /* FluencyKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01CONFIGLIST002;
+			buildPhases = (
+				01SOURCES002 /* Sources */,
+				01FRAMEWORKS002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FluencyKeyboard;
+			productName = FluencyKeyboard;
+			productReference = 01KEYBOARDPROD001;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		01PROJECTROOT001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					01FLUENCYTARGET001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					01KEYBOARDTARGET001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 01PROJECTCONFIG001;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 01MAINGROUP001;
+			productRefGroup = 01PRODUCTSGROUP001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				01FLUENCYTARGET001 /* FluencyiOS */,
+				01KEYBOARDTARGET001 /* FluencyKeyboard */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		01RESOURCES001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		01SOURCES001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01FLUENCYAPP001 /* FluencyiOSApp.swift in Sources */,
+				01FLUENCYAPP002 /* Transcription.swift in Sources */,
+				01FLUENCYAPP003 /* HomeView.swift in Sources */,
+				01FLUENCYAPP004 /* HistoryView.swift in Sources */,
+				01FLUENCYAPP005 /* StatsView.swift in Sources */,
+				01FLUENCYAPP006 /* SettingsView.swift in Sources */,
+				01FLUENCYAPP007 /* AudioRecorder.swift in Sources */,
+				01FLUENCYAPP008 /* TranscriptionService.swift in Sources */,
+				01FLUENCYAPP009 /* TTSService.swift in Sources */,
+				01FLUENCYAPP010 /* StatsService.swift in Sources */,
+				01FLUENCYAPP011 /* KeychainHelper.swift in Sources */,
+				01FLUENCYAPP012 /* SyncService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01SOURCES002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01KEYBOARD001 /* KeyboardViewController.swift in Sources */,
+				01KEYBOARD003 /* AudioRecorder.swift in Sources */,
+				01KEYBOARD004 /* TranscriptionService.swift in Sources */,
+				01KEYBOARD005 /* StatsService.swift in Sources */,
+				01KEYBOARD006 /* KeychainHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		01DEPENDENCY001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01KEYBOARDTARGET001;
+			targetProxy = 01PROXYITEM001;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		01DEBUGCONFIG001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		01RELEASECONFIG001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		01APPCONFIG001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FluencyiOS/Resources/FluencyiOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluencyiOS/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fluency;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fluency needs microphone access to transcribe your speech into text";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Fluency uses speech recognition to convert your voice to text";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fluency.ios;
+				PRODUCT_NAME = Fluency;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		01APPCONFIG002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FluencyiOS/Resources/FluencyiOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluencyiOS/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fluency;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fluency needs microphone access to transcribe your speech into text";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Fluency uses speech recognition to convert your voice to text";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fluency.ios;
+				PRODUCT_NAME = Fluency;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		01KEYCONFIG001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluencyiOS/FluencyKeyboard/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fluency Keyboard";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fluency needs microphone access for voice dictation in the keyboard";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fluency.ios.keyboard;
+				PRODUCT_NAME = FluencyKeyboard;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		01KEYCONFIG002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluencyiOS/FluencyKeyboard/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fluency Keyboard";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fluency needs microphone access for voice dictation in the keyboard";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fluency.ios.keyboard;
+				PRODUCT_NAME = FluencyKeyboard;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		01PROJECTCONFIG001 /* Build configuration list for PBXProject "FluencyiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01DEBUGCONFIG001 /* Debug */,
+				01RELEASECONFIG001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01CONFIGLIST001 /* Build configuration list for PBXNativeTarget "FluencyiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01APPCONFIG001 /* Debug */,
+				01APPCONFIG002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01CONFIGLIST002 /* Build configuration list for PBXNativeTarget "FluencyKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01KEYCONFIG001 /* Debug */,
+				01KEYCONFIG002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 01PROJECTROOT001 /* Project object */;
+}
