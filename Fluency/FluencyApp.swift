@@ -23,7 +23,9 @@ struct FluencyApp: App {
         }
 
         MenuBarExtra {
-            MenuBarView()
+            MenuBarView(openSettingsAction: {
+                appDelegate.openSettings()
+            })
                 .modelContainer(sharedModelContainer)
                 .environmentObject(appDelegate.appState)
         } label: {
@@ -41,6 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var overlayHostingView: NSHostingView<AnyView>?
     var speakingOverlayWindow: NSWindow?
     var speakingOverlayHostingView: NSHostingView<AnyView>?
+    var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupOverlayWindow()
@@ -56,6 +59,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         appState.stopServices()
+    }
+
+    func openSettings() {
+        if settingsWindow == nil {
+            setupSettingsWindow()
+        }
+        settingsWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    
+    private func setupSettingsWindow() {
+        let settingsView = SettingsView()
+            .environmentObject(appState)
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 450, height: 600),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.center()
+        window.title = "Fluency Settings"
+        window.contentView = NSHostingView(rootView: settingsView)
+        window.isReleasedWhenClosed = false
+        self.settingsWindow = window
     }
 
     private func setupOverlayWindow() {

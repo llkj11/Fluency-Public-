@@ -4,9 +4,9 @@ import SwiftData
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext
+    var openSettingsAction: (() -> Void)? = nil
     @Query(sort: \Transcription.createdAt, order: .reverse) private var transcriptions: [Transcription]
 
-    @State private var showingSettings = false
     @State private var selectedTab = 0
 
     var body: some View {
@@ -62,17 +62,13 @@ struct MenuBarView: View {
             
             // Settings button
             Button {
-                showingSettings = true
+                openSettingsAction?()
             } label: {
                 Image(systemName: "gear")
                     .font(.system(size: 14))
                     .foregroundColor(.secondary)
             }
             .buttonStyle(.plain)
-            .sheet(isPresented: $showingSettings) {
-                SettingsView()
-                    .frame(minWidth: 420, minHeight: 500)
-            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

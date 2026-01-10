@@ -13,7 +13,6 @@ struct SettingsView: View {
     @State private var selectedTTSProvider: TTSProvider = TTSService.selectedProvider
     @State private var selectedPresetId: UUID = TTSService.selectedPresetId
     @State private var isPreviewingVoice = false
-    @State private var showingPresetMaker = false
     @State private var customPresets: [VoicePreset] = TTSService.customPresets
     
     // API Verification states
@@ -26,11 +25,11 @@ struct SettingsView: View {
     }
     
     enum TranscriptionProvider: String, CaseIterable {
-        case openAI = "OpenAI"
-        case placeholder1 = "Provider 2 (Coming Soon)"
-        case placeholder2 = "Provider 3 (Coming Soon)"
-        case placeholder3 = "Provider 4 (Coming Soon)"
-        case placeholder4 = "Provider 5 (Coming Soon)"
+        case openAI = "GPT-4o Mini Transcribe"
+        case whisper = "OpenAI Whisper (Coming Soon)"
+        case deepgram = "Deepgram (Coming Soon)"
+        case assemblyAI = "AssemblyAI (Coming Soon)"
+        case localWhisper = "Local Whisper (Coming Soon)"
     }
 
     var body: some View {
@@ -210,30 +209,8 @@ struct SettingsView: View {
                     
                     Divider()
                     
-                    // Actions row
+                    // Preview Button
                     HStack {
-                        Button {
-                            showingPresetMaker = true
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "plus")
-                                Text("New Style")
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-                        
-                        // Delete custom preset button
-                        if !currentPreset.isBuiltIn {
-                            Button(role: .destructive) {
-                                deletePreset(currentPreset)
-                            } label: {
-                                Image(systemName: "trash")
-                            }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                        }
-                        
                         Spacer()
                         
                         Button {
@@ -246,7 +223,7 @@ struct SettingsView: View {
                                 } else {
                                     Image(systemName: "play.fill")
                                 }
-                                Text("Preview")
+                                Text("Preview Voice")
                             }
                         }
                         .buttonStyle(.bordered)
@@ -317,16 +294,9 @@ struct SettingsView: View {
                 }
             }
         }
+
         .onAppear {
             loadSettings()
-        }
-        .sheet(isPresented: $showingPresetMaker) {
-            PresetMakerView { newPreset in
-                TTSService.addCustomPreset(newPreset)
-                customPresets = TTSService.customPresets
-                selectedPresetId = newPreset.id
-                TTSService.selectedPresetId = newPreset.id
-            }
         }
     }
 
@@ -439,11 +409,6 @@ struct SettingsView: View {
         }
     }
     
-    private func deletePreset(_ preset: VoicePreset) {
-        TTSService.deleteCustomPreset(preset)
-        customPresets = TTSService.customPresets
-        selectedPresetId = TTSService.selectedPresetId
-    }
 }
 
 struct InstructionRow: View {
@@ -494,145 +459,6 @@ struct PermissionRow: View {
             .controlSize(.small)
         }
         .padding(.vertical, 4)
-    }
-}
-
-// MARK: - Preset Maker View
-
-struct PresetMakerView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    @State private var presetName: String = ""
-    @State private var instructions: String = ""
-    
-    let onSave: (VoicePreset) -> Void
-    
-    private let exampleInstructions = [
-        "Speak slowly and calmly, with a gentle tone.",
-        "Speak with excitement and high energy!",
-        "Speak in a whisper, very softly.",
-        "Speak like a news anchor, professional and clear.",
-        "Speak with a British accent, formal and refined.",
-        "Speak quickly with urgency.",
-        "Speak warmly, like talking to a close friend."
-    ]
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Create Voice Style")
-                .font(.headline)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Name")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                TextField("My Custom Style", text: $presetName)
-                    .textFieldStyle(.roundedBorder)
-            }
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Voice Instructions")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
-                TextEditor(text: $instructions)
-                    .font(.body)
-                    .frame(height: 80)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                    )
-                
-                Text("Describe how the voice should sound: tone, speed, accent, emotion, etc.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Examples (tap to use)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
-                FlowLayout(spacing: 6) {
-                    ForEach(exampleInstructions, id: \.self) { example in
-                        Button {
-                            instructions = example
-                        } label: {
-                            Text(example)
-                                .font(.caption)
-                                .lineLimit(1)
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-                    }
-                }
-            }
-            
-            Spacer()
-            
-            HStack {
-                Button("Cancel") {
-                    dismiss()
-                }
-                .buttonStyle(.bordered)
-                
-                Spacer()
-                
-                Button("Save") {
-                    let preset = VoicePreset(
-                        name: presetName.isEmpty ? "Custom Style" : presetName,
-                        instructions: instructions
-                    )
-                    onSave(preset)
-                    dismiss()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(instructions.isEmpty)
-            }
-        }
-        .padding()
-        .frame(width: 400, height: 380)
-    }
-}
-
-// Simple flow layout for example buttons
-struct FlowLayout: Layout {
-    var spacing: CGFloat = 8
-    
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = layout(proposal: proposal, subviews: subviews)
-        return result.size
-    }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = layout(proposal: proposal, subviews: subviews)
-        for (index, frame) in result.frames.enumerated() {
-            subviews[index].place(at: CGPoint(x: bounds.minX + frame.minX, y: bounds.minY + frame.minY), proposal: .unspecified)
-        }
-    }
-    
-    private func layout(proposal: ProposedViewSize, subviews: Subviews) -> (size: CGSize, frames: [CGRect]) {
-        var frames: [CGRect] = []
-        var currentX: CGFloat = 0
-        var currentY: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        let maxWidth = proposal.width ?? .infinity
-        
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
-            
-            if currentX + size.width > maxWidth && currentX > 0 {
-                currentX = 0
-                currentY += lineHeight + spacing
-                lineHeight = 0
-            }
-            
-            frames.append(CGRect(x: currentX, y: currentY, width: size.width, height: size.height))
-            lineHeight = max(lineHeight, size.height)
-            currentX += size.width + spacing
-        }
-        
-        return (CGSize(width: maxWidth, height: currentY + lineHeight), frames)
     }
 }
 

@@ -1,0 +1,1 @@
+-Make a new commit and push with every major change. (Ask user which branch to push to if unsure.)

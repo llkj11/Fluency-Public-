@@ -86,12 +86,13 @@ class HotkeyService {
         }
     }
 
+    private var startRecordingWorkItem: DispatchWorkItem?
+
     private func handleFlagsChanged(event: NSEvent) {
         let flags = event.modifierFlags
         let keyCode = event.keyCode
 
         // The Fn key sets the "function" bit in modifier flags
-        // NSEvent.ModifierFlags.function (aka secondaryFn) = 0x800000
         let fnIsPressed = flags.contains(.function)
         let controlIsPressed = flags.contains(.control)
 
@@ -114,11 +115,17 @@ class HotkeyService {
         // Handle Fn+Control for TTS
         if fnAndControl && !controlWasPressed {
             controlWasPressed = true
-            // If we were recording, stop it first
+            
+            // Cancel any pending STT start
+            startRecordingWorkItem?.cancel()
+            startRecordingWorkItem = nil
+            
+            // If we were already recording (user pressed Fn, waited > delay, then pressed Control), stop it
             if isRecording {
                 print("⏹️ Stopping recording for TTS trigger")
                 stopRecording()
             }
+            
             print("🔊 Fn+Control pressed - triggering TTS!")
             DispatchQueue.main.async { [weak self] in
                 self?.onTTSTriggered()
@@ -128,19 +135,31 @@ class HotkeyService {
         }
 
         // Handle Fn-only for recording (STT)
+        // Add a small delay to allow for Fn+Control sequence
         if fnOnly && !fnPressed && !controlWasPressed {
             fnPressed = true
-            print("🎙️ Fn pressed - starting recording!")
-            startRecording()
-        } else if !fnIsPressed && fnPressed {
-            fnPressed = false
-            if isRecording {
-                print("⏹️ Fn released - stopping recording!")
-                stopRecording()
+            
+            // Cancel any existing item just in case
+            startRecordingWorkItem?.cancel()
+            
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self = self, self.fnPressed else { return }
+                print("🎙️ Fn pressed (debounced) - starting recording!")
+                self.startRecording()
             }
-        } else if !fnOnly && fnPressed && !fnIsPressed {
-            // Fn was released
+            
+            startRecordingWorkItem = workItem
+            // 200ms delay to check if user presses Control
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem)
+            
+        } else if !fnIsPressed && fnPressed {
+            // Fn released
             fnPressed = false
+            
+            // Cancel pending start if any
+            startRecordingWorkItem?.cancel()
+            startRecordingWorkItem = nil
+            
             if isRecording {
                 print("⏹️ Fn released - stopping recording!")
                 stopRecording()
