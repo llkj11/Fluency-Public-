@@ -131,11 +131,13 @@ class KeychainHelper {
     enum APIKeyType {
         case openAI
         case gemini
+        case groq
         
         var storageKey: String {
             switch self {
             case .openAI: return "com.fluency.openai-api-key"
             case .gemini: return "com.fluency.gemini-api-key"
+            case .groq: return "com.fluency.groq-api-key"
             }
         }
     }

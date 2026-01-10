@@ -1,1 +1,3 @@
 -Make a new commit and push with every major change. (Ask user which branch to push to if unsure.)
+-Verify all builds succeed in XCode after making major/minor changes. 
+-After changes, add appropriate files to XCode. Do not ask the user to do this. 

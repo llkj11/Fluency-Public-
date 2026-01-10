@@ -178,8 +178,22 @@ struct VoicePreset: Codable, Identifiable, Equatable {
     )
     
     static var builtInPresets: [VoicePreset] {
-        [.neutral, .cheerful, .calm, .professional, .storyteller]
+        [.neutral, .cheerful, .calm, .iceCold, .professional, .storyteller, .auto]
     }
+    
+    static let auto = VoicePreset(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000099")!,
+        name: "✨ Auto (Smart)",
+        instructions: "",
+        isBuiltIn: true
+    )
+    
+    static let iceCold = VoicePreset(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!,
+        name: "Ice Cold",
+        instructions: "Style: Cold, detached, and ruthless. The tone is sharp, precise, and devoid of warmth. Enunciate every syllable with chilling clarity. Maintain a steady, unyielding pace. The delivery should feel like a calculated machine or a villain delivering a final ultimatum.",
+        isBuiltIn: true
+    )
 }
 
 // MARK: - TTS Service
@@ -302,8 +316,30 @@ class TTSService: NSObject, AVAudioPlayerDelegate {
             throw TTSError.noTextSelected
         }
         
-        let selectedVoice = voice ?? TTSService.selectedVoice
-        let selectedPreset = preset ?? TTSService.selectedPreset
+        var selectedVoice = voice ?? TTSService.selectedVoice
+        var selectedPreset = preset ?? TTSService.selectedPreset
+        
+        // Handle Auto Preset
+        if selectedPreset == VoicePreset.auto {
+            do {
+                if isSpeaking { stopSpeaking() } // Ensure we stop previous speech
+                
+                // Analyze text for tone
+                let dynamicInstructions = try await GroqService.shared.analyzeTone(text: text)
+                print("🧠 [Groq Auto] Instructions: \(dynamicInstructions)")
+                
+                // Create temp preset with dynamic instructions
+                selectedPreset = VoicePreset(
+                    id: UUID(),
+                    name: "Auto Generated",
+                    instructions: dynamicInstructions,
+                    isBuiltIn: false
+                )
+            } catch {
+                print("⚠️ [Groq Auto] Analysis failed: \(error.localizedDescription). Falling back to Neutral.")
+                selectedPreset = .neutral
+            }
+        }
         
         if selectedVoice.provider == .gemini {
             try await speakGemini(text: text, voice: selectedVoice, preset: selectedPreset, onComplete: onComplete)
@@ -479,12 +515,11 @@ class TTSService: NSObject, AVAudioPlayerDelegate {
         return header + pcmData
     }
     
-    @MainActor
     private func playAudio(data: Data, onComplete: (() -> Void)?) async throws {
         do {
             audioPlayer = try AVAudioPlayer(data: data)
             audioPlayer?.delegate = self
-            onPlaybackComplete = onComplete
+            self.onPlaybackComplete = onComplete
             
             if audioPlayer?.play() == true {
                 isSpeaking = true
@@ -493,6 +528,36 @@ class TTSService: NSObject, AVAudioPlayerDelegate {
             }
         } catch {
             throw TTSError.audioPlaybackFailed
+        }
+    }
+    
+    // MARK: - Verification
+    
+    func verifyGeminiAPIKey(_ apiKey: String) async -> Result<Void, TTSError> {
+        let endpoint = "https://generativelanguage.googleapis.com/v1beta/models?key=\(apiKey)"
+        
+        var request = URLRequest(url: URL(string: endpoint)!)
+        request.httpMethod = "GET"
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return .failure(.invalidResponse)
+            }
+            
+            if httpResponse.statusCode == 200 {
+                return .success(())
+            } else {
+                if let errorJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let error = errorJson["error"] as? [String: Any],
+                   let message = error["message"] as? String {
+                    return .failure(.apiError(message))
+                }
+                return .failure(.apiError("HTTP \(httpResponse.statusCode)"))
+            }
+        } catch {
+            return .failure(.networkError(error))
         }
     }
     

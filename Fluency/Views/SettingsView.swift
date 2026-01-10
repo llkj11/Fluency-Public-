@@ -8,6 +8,8 @@ struct SettingsView: View {
     @State private var geminiAPIKey: String = ""
     @State private var showingAPIKey = false
     @State private var showingGeminiAPIKey = false
+    @State private var showingGroqAPIKey = false
+    @State private var groqAPIKey: String = ""
     @State private var launchAtLogin = false
     @State private var showSaveConfirmation = false
     @State private var selectedProvider: TranscriptionProvider = .openAI
@@ -19,7 +21,16 @@ struct SettingsView: View {
     
     // API Verification states
     @State private var isVerifying = false
+    @State private var isVerifyingGemini = false
+    @State private var isVerifyingGroq = false
     @State private var verificationResult: VerificationResult?
+    @State private var geminiVerificationResult: VerificationResult?
+    @State private var groqVerificationResult: VerificationResult?
+    
+    // Lock States (Prevent accidental edits)
+    @State private var isOpenAILocked = true
+    @State private var isGeminiLocked = true
+    @State private var isGroqLocked = true
     
     enum VerificationResult {
         case success
@@ -49,6 +60,7 @@ struct SettingsView: View {
                                 .onChange(of: apiKey) { _, newValue in
                                     autoSaveAPIKey(newValue, type: .openAI)
                                 }
+                                .disabled(isOpenAILocked)
                         } else {
                             SecureField("sk-...", text: $apiKey)
                                 .textFieldStyle(.roundedBorder)
@@ -56,6 +68,7 @@ struct SettingsView: View {
                                 .onChange(of: apiKey) { _, newValue in
                                     autoSaveAPIKey(newValue, type: .openAI)
                                 }
+                                .disabled(isOpenAILocked)
                         }
 
                         Button {
@@ -64,6 +77,15 @@ struct SettingsView: View {
                             Image(systemName: showingAPIKey ? "eye.slash" : "eye")
                         }
                         .buttonStyle(.borderless)
+                        
+                        Button {
+                            isOpenAILocked.toggle()
+                        } label: {
+                            Image(systemName: isOpenAILocked ? "lock.fill" : "lock.open.fill")
+                                .foregroundColor(isOpenAILocked ? .secondary : .accentColor)
+                        }
+                        .buttonStyle(.borderless)
+                        .help(isOpenAILocked ? "Unlock to edit" : "Lock to prevent changes")
                     }
 
                     HStack {
@@ -72,7 +94,7 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundColor(.green)
                         } else {
-                            Text("Enter your API key above")
+                            Text(isOpenAILocked ? "Unlock to enter API key" : "Enter your API key above")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -98,6 +120,19 @@ struct SettingsView: View {
                         }
                     }
                     
+                    if let result = verificationResult {
+                        switch result {
+                        case .success:
+                            Label("API key is valid!", systemImage: "checkmark.seal.fill")
+                                .foregroundColor(.green)
+                                .font(.caption)
+                        case .failure(let error):
+                            Label(error, systemImage: "xmark.circle.fill")
+                                .foregroundColor(.red)
+                                .font(.caption)
+                        }
+                    }
+                    
                     Divider()
                     
                     Text("Gemini API Key")
@@ -111,6 +146,7 @@ struct SettingsView: View {
                                 .onChange(of: geminiAPIKey) { _, newValue in
                                     autoSaveAPIKey(newValue, type: .gemini)
                                 }
+                                .disabled(isGeminiLocked)
                         } else {
                             SecureField("Paste key...", text: $geminiAPIKey)
                                 .textFieldStyle(.roundedBorder)
@@ -118,6 +154,7 @@ struct SettingsView: View {
                                 .onChange(of: geminiAPIKey) { _, newValue in
                                     autoSaveAPIKey(newValue, type: .gemini)
                                 }
+                                .disabled(isGeminiLocked)
                         }
 
                         Button {
@@ -126,6 +163,15 @@ struct SettingsView: View {
                             Image(systemName: showingGeminiAPIKey ? "eye.slash" : "eye")
                         }
                         .buttonStyle(.borderless)
+                        
+                        Button {
+                            isGeminiLocked.toggle()
+                        } label: {
+                            Image(systemName: isGeminiLocked ? "lock.fill" : "lock.open.fill")
+                                .foregroundColor(isGeminiLocked ? .secondary : .accentColor)
+                        }
+                        .buttonStyle(.borderless)
+                        .help(isGeminiLocked ? "Unlock to edit" : "Lock to prevent changes")
                     }
 
                     HStack {
@@ -134,29 +180,33 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundColor(.green)
                         } else {
-                            Text("Enter your Google Gemini API key")
+                            Text(isGeminiLocked ? "Unlock to enter API key" : "Enter your Google Gemini API key")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         
                         Spacer()
                         
-                        // TODO: Implement verifyGeminiAPIKey logic
+                        Button("Verify") {
+                            verifyGeminiAPIKey()
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                        .disabled(geminiAPIKey.isEmpty || isVerifyingGemini)
                         
                         if !geminiAPIKey.isEmpty {
                             Button("Clear", role: .destructive) {
                                 clearAPIKey(type: .gemini)
                             }
                         }
-                    }
-
-                    if showSaveConfirmation {
-                        Label("API key saved", systemImage: "checkmark.circle.fill")
-                            .foregroundColor(.green)
-                            .font(.caption)
+                        
+                        if isVerifyingGemini {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
                     }
                     
-                    if let result = verificationResult {
+                    if let result = geminiVerificationResult {
                         switch result {
                         case .success:
                             Label("API key is valid!", systemImage: "checkmark.seal.fill")
@@ -168,6 +218,98 @@ struct SettingsView: View {
                                 .font(.caption)
                         }
                     }
+
+                    Divider()
+                    
+                    Text("Groq API Key (for Auto Mode)")
+                        .font(.headline)
+
+                    HStack {
+                        if showingGroqAPIKey {
+                            TextField("gsk-...", text: $groqAPIKey)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.system(.body, design: .monospaced))
+                                .onChange(of: groqAPIKey) { _, newValue in
+                                    autoSaveAPIKey(newValue, type: .groq)
+                                }
+                                .disabled(isGroqLocked)
+                        } else {
+                            SecureField("gsk-...", text: $groqAPIKey)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.system(.body, design: .monospaced))
+                                .onChange(of: groqAPIKey) { _, newValue in
+                                    autoSaveAPIKey(newValue, type: .groq)
+                                }
+                                .disabled(isGroqLocked)
+                        }
+
+                        Button {
+                            showingGroqAPIKey.toggle()
+                        } label: {
+                            Image(systemName: showingGroqAPIKey ? "eye.slash" : "eye")
+                        }
+                        .buttonStyle(.borderless)
+                        
+                        Button {
+                            isGroqLocked.toggle()
+                        } label: {
+                            Image(systemName: isGroqLocked ? "lock.fill" : "lock.open.fill")
+                                .foregroundColor(isGroqLocked ? .secondary : .accentColor)
+                        }
+                        .buttonStyle(.borderless)
+                        .help(isGroqLocked ? "Unlock to edit" : "Lock to prevent changes")
+                    }
+
+                    HStack {
+                        if !groqAPIKey.isEmpty {
+                            Label("Saved", systemImage: "checkmark.circle.fill")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        } else {
+                            Text(isGroqLocked ? "Unlock to enter API key" : "Enter your Groq API key")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Button("Verify") {
+                            verifyGroqAPIKey()
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                        .disabled(groqAPIKey.isEmpty || isVerifyingGroq)
+                        
+                        if !groqAPIKey.isEmpty {
+                            Button("Clear", role: .destructive) {
+                                clearAPIKey(type: .groq)
+                            }
+                        }
+                        
+                        if isVerifyingGroq {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    }
+                    
+                    if let result = groqVerificationResult {
+                        switch result {
+                        case .success:
+                            Label("API key is valid!", systemImage: "checkmark.seal.fill")
+                                .foregroundColor(.green)
+                                .font(.caption)
+                        case .failure(let error):
+                            Label(error, systemImage: "xmark.circle.fill")
+                                .foregroundColor(.red)
+                                .font(.caption)
+                        }
+                    }
+
+                    if showSaveConfirmation {
+                        Label("API key saved", systemImage: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                            .font(.caption)
+                    }
                 }
             } header: {
                 Text("API Configuration")
@@ -175,6 +317,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Link("Get an OpenAI API key", destination: URL(string: "https://platform.openai.com/api-keys")!)
                     Link("Get a Gemini API key", destination: URL(string: "https://aistudio.google.com/app/apikey")!)
+                    Link("Get a Groq API key", destination: URL(string: "https://console.groq.com/keys")!)
                 }
                 .font(.caption)
             }
@@ -365,9 +508,23 @@ struct SettingsView: View {
     private func loadSettings() {
         if let key = KeychainHelper.getAPIKey(for: .openAI) {
             apiKey = key
+            isOpenAILocked = !key.isEmpty
+        } else {
+            isOpenAILocked = false
         }
+        
         if let key = KeychainHelper.getAPIKey(for: .gemini) {
             geminiAPIKey = key
+            isGeminiLocked = !key.isEmpty
+        } else {
+            isGeminiLocked = false
+        }
+        
+        if let key = KeychainHelper.getAPIKey(for: .groq) {
+            groqAPIKey = key
+            isGroqLocked = !key.isEmpty
+        } else {
+            isGroqLocked = false
         }
         // Check launch at login status
         launchAtLogin = SMAppService.mainApp.status == .enabled
@@ -385,6 +542,10 @@ struct SettingsView: View {
         }
         if type == .openAI {
             verificationResult = nil
+        } else if type == .gemini {
+            geminiVerificationResult = nil
+        } else if type == .groq {
+            groqVerificationResult = nil
         }
     }
 
@@ -414,9 +575,54 @@ struct SettingsView: View {
                     verificationResult = .failure(error.localizedDescription)
                 }
                 
-                // Auto-hide result after 5 seconds
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                     verificationResult = nil
+                }
+            }
+        }
+    }
+    
+    private func verifyGeminiAPIKey() {
+        isVerifyingGemini = true
+        geminiVerificationResult = nil
+        
+        Task {
+            let result = await TTSService.shared.verifyGeminiAPIKey(geminiAPIKey)
+            
+            await MainActor.run {
+                isVerifyingGemini = false
+                switch result {
+                case .success:
+                    geminiVerificationResult = .success
+                case .failure(let error):
+                    geminiVerificationResult = .failure(error.localizedDescription)
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    geminiVerificationResult = nil
+                }
+            }
+        }
+    }
+    
+    private func verifyGroqAPIKey() {
+        isVerifyingGroq = true
+        groqVerificationResult = nil
+        
+        Task {
+            let result = await GroqService.shared.verifyAPIKey(groqAPIKey)
+            
+            await MainActor.run {
+                isVerifyingGroq = false
+                switch result {
+                case .success:
+                    groqVerificationResult = .success
+                case .failure(let error):
+                    groqVerificationResult = .failure(error.localizedDescription)
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    groqVerificationResult = nil
                 }
             }
         }
@@ -428,6 +634,9 @@ struct SettingsView: View {
             apiKey = ""
         } else {
             geminiAPIKey = ""
+        }
+        if type == .groq {
+            groqAPIKey = ""
         }
     }
 
@@ -489,9 +698,9 @@ struct InstructionRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Text("\(number).")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(.accentColor)
-                .frame(width: 20)
+            .font(.system(size: 12, weight: .bold, design: .rounded))
+            .foregroundColor(.accentColor)
+            .frame(width: 20)
 
             Text(text)
                 .font(.system(size: 12))
