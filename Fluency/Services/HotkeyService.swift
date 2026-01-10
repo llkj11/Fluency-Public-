@@ -7,14 +7,17 @@ class HotkeyService {
     private var localMonitor: Any?
     private var isRecording = false
     private var fnPressed = false
+    private var controlWasPressed = false
     private var retryTimer: Timer?
 
     private let onRecordingStart: () -> Void
     private let onRecordingStop: () -> Void
+    private let onTTSTriggered: () -> Void
 
-    init(onRecordingStart: @escaping () -> Void, onRecordingStop: @escaping () -> Void) {
+    init(onRecordingStart: @escaping () -> Void, onRecordingStop: @escaping () -> Void, onTTSTriggered: @escaping () -> Void = {}) {
         self.onRecordingStart = onRecordingStart
         self.onRecordingStop = onRecordingStop
+        self.onTTSTriggered = onTTSTriggered
     }
 
     func start() {
@@ -90,9 +93,10 @@ class HotkeyService {
         // The Fn key sets the "function" bit in modifier flags
         // NSEvent.ModifierFlags.function (aka secondaryFn) = 0x800000
         let fnIsPressed = flags.contains(.function)
+        let controlIsPressed = flags.contains(.control)
 
         // Debug: print all flag changes
-        print("🔑 Flags: keyCode=\(keyCode), fn=\(fnIsPressed), raw=\(flags.rawValue)")
+        print("🔑 Flags: keyCode=\(keyCode), fn=\(fnIsPressed), ctrl=\(controlIsPressed), raw=\(flags.rawValue)")
 
         // Check if ONLY Fn is pressed (no other modifiers)
         let fnOnly = fnIsPressed &&
@@ -100,15 +104,40 @@ class HotkeyService {
                      !flags.contains(.option) &&
                      !flags.contains(.shift) &&
                      !flags.contains(.control)
+        
+        // Check if Fn+Control is pressed (for TTS)
+        let fnAndControl = fnIsPressed && controlIsPressed &&
+                           !flags.contains(.command) &&
+                           !flags.contains(.option) &&
+                           !flags.contains(.shift)
 
-        if fnOnly && !fnPressed {
+        // Handle Fn+Control for TTS
+        if fnAndControl && !controlWasPressed {
+            controlWasPressed = true
+            // If we were recording, stop it first
+            if isRecording {
+                print("⏹️ Stopping recording for TTS trigger")
+                stopRecording()
+            }
+            print("🔊 Fn+Control pressed - triggering TTS!")
+            DispatchQueue.main.async { [weak self] in
+                self?.onTTSTriggered()
+            }
+        } else if !controlIsPressed && controlWasPressed {
+            controlWasPressed = false
+        }
+
+        // Handle Fn-only for recording (STT)
+        if fnOnly && !fnPressed && !controlWasPressed {
             fnPressed = true
             print("🎙️ Fn pressed - starting recording!")
             startRecording()
         } else if !fnIsPressed && fnPressed {
             fnPressed = false
-            print("⏹️ Fn released - stopping recording!")
-            stopRecording()
+            if isRecording {
+                print("⏹️ Fn released - stopping recording!")
+                stopRecording()
+            }
         } else if !fnOnly && fnPressed && !fnIsPressed {
             // Fn was released
             fnPressed = false

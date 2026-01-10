@@ -1,23 +1,35 @@
 # Fluency - Project Scope
 
 ## What Is This?
-A native macOS menu bar app that works like Wispr Flow / Spokenly - hold Cmd key to speak, release to transcribe, and the text auto-pastes into whatever text field is focused.
+A native macOS menu bar app that provides voice interaction anywhere on your Mac:
+- **Speech-to-Text (STT)**: Hold Fn key to speak, release to transcribe and paste
+- **Text-to-Speech (TTS)**: Select text anywhere, press Fn+Control to hear it spoken
 
 ## Tech Stack
 - Swift 5.9+ / SwiftUI
-- AVFoundation for audio recording
-- CGEvent tap for global Cmd key detection
+- AVFoundation for audio recording and playback
+- CGEvent tap for global Fn key detection
 - OpenAI `gpt-4o-mini-transcribe` API for STT
+- OpenAI `gpt-4o-mini-tts` API for TTS
 - SwiftData for history persistence
-- Keychain for secure API key storage
+- UserDefaults for API key and settings storage
 
 ## Key Features
-1. **Hold Cmd Key** - Hold to record, release to transcribe (250ms delay to not interfere with Cmd+C, etc.)
-2. **Auto-Paste** - Transcription auto-pastes into the active text field
-3. **Recording Overlay** - Floating popup shows "Listening..." with waveform animation
-4. **History View** - See past transcriptions with timestamps
-5. **Settings** - API key input, stored securely in Keychain
-6. **Menu Bar App** - Lives in menu bar, minimal footprint
+1. **Hold Fn Key** - Hold to record, release to transcribe (STT)
+2. **Fn + Control** - Speaks selected text aloud (TTS)
+3. **Auto-Paste** - Transcription auto-pastes into the active text field
+4. **Recording Overlay** - Floating popup with waveform animation
+5. **Speaking Overlay** - Floating popup with sound wave animation
+6. **History View** - See past transcriptions with timestamps
+7. **Voice Selection** - Choose from 13 OpenAI TTS voices
+8. **Settings** - API key input, voice selection, launch at login
+9. **Menu Bar App** - Lives in menu bar, minimal footprint
+
+## Keyboard Shortcuts
+| Shortcut | Action |
+|----------|--------|
+| Hold **Fn** | Record voice → Speech-to-Text → Auto-paste |
+| **Fn + Control** | Selected text → Text-to-Speech → Audio playback |
 
 ## Project Structure
 ```
@@ -26,15 +38,21 @@ Fluency/
 ├── Models/
 │   └── Transcription.swift    # SwiftData model for history
 ├── Services/
-│   ├── HotkeyService.swift    # Global Cmd key detection via CGEvent
+│   ├── HotkeyService.swift    # Global Fn key detection via CGEvent
 │   ├── AudioRecorder.swift    # AVAudioRecorder wrapper (records to .m4a)
-│   ├── TranscriptionService.swift  # OpenAI API + KeychainHelper
-│   └── PasteService.swift     # Accessibility paste via AXUIElement
+│   ├── TranscriptionService.swift  # OpenAI STT API + KeychainHelper
+│   ├── TTSService.swift       # OpenAI TTS API + AVAudioPlayer
+│   ├── TextCaptureService.swift    # Capture selected text via Cmd+C
+│   ├── PasteService.swift     # Accessibility paste via AXUIElement
+│   ├── AudioFeedbackService.swift  # Sound effects
+│   └── StatsService.swift     # Usage statistics
 ├── Views/
 │   ├── MenuBarView.swift      # Menu bar popover with status & actions
 │   ├── RecordingOverlay.swift # Floating "Listening..." popup with waveform
+│   ├── SpeakingOverlay.swift  # Floating "Speaking..." popup with sound waves
 │   ├── HistoryView.swift      # List of past transcriptions
-│   └── SettingsView.swift     # API key input
+│   ├── SettingsView.swift     # API key, voice selection, permissions
+│   └── StatsView.swift        # Usage statistics display
 └── Resources/
     ├── Info.plist             # Permissions (microphone)
     └── Fluency.entitlements   # Audio input entitlement
@@ -42,14 +60,23 @@ Fluency/
 
 ## Required Permissions
 1. **Microphone** - For recording voice
-2. **Accessibility** - For CGEvent tap (hotkey detection) and text paste
+2. **Accessibility** - For CGEvent tap (hotkey detection) and text paste/capture
 
 ## OpenAI API Details
+
+### Speech-to-Text (STT)
 - Endpoint: `POST https://api.openai.com/v1/audio/transcriptions`
 - Model: `gpt-4o-mini-transcribe`
 - Audio format: AAC (.m4a), 16kHz, mono
 - Response format: `text`
 - Cost: ~$0.003/minute
+
+### Text-to-Speech (TTS)
+- Endpoint: `POST https://api.openai.com/v1/audio/speech`
+- Model: `gpt-4o-mini-tts`
+- Audio format: WAV (for low latency)
+- Available voices: alloy, ash, ballad, coral, echo, fable, marin⭐, cedar⭐, nova, onyx, sage, shimmer, verse
+- Cost: ~$0.015/1K characters
 
 ## Implementation Status
 
@@ -57,13 +84,19 @@ Fluency/
 - [x] FluencyApp.swift - Main app entry with AppDelegate and AppState
 - [x] Transcription.swift - SwiftData model
 - [x] AudioRecorder.swift - AVAudioRecorder service
-- [x] HotkeyService.swift - Cmd key detection with CGEvent tap
-- [x] TranscriptionService.swift - OpenAI API + Keychain helper
+- [x] HotkeyService.swift - Fn key detection with CGEvent tap (Fn only + Fn+Control)
+- [x] TranscriptionService.swift - OpenAI STT API
+- [x] TTSService.swift - OpenAI TTS API with 13 voice options
+- [x] TextCaptureService.swift - Capture selected text
 - [x] PasteService.swift - Accessibility paste
+- [x] AudioFeedbackService.swift - Sound effects
+- [x] StatsService.swift - Usage statistics
 - [x] RecordingOverlay.swift - Floating UI with waveform animation
+- [x] SpeakingOverlay.swift - Floating UI with sound wave animation
 - [x] MenuBarView.swift - Menu bar popover
 - [x] HistoryView.swift - History list with search
-- [x] SettingsView.swift - API key settings + permissions
+- [x] SettingsView.swift - API key, voice selection, permissions
+- [x] StatsView.swift - Usage statistics display
 - [x] Info.plist - Permissions configured
 - [x] Fluency.entitlements - Audio input enabled
 - [x] Xcode project file (project.pbxproj)
@@ -78,10 +111,11 @@ All code is complete. Open the project in Xcode and build.
 4. Grant microphone permission when prompted
 5. Grant Accessibility permission in System Settings when prompted
 6. Add your OpenAI API key in Settings (click the menu bar icon)
-7. Hold Command key to record, release to transcribe!
+7. Set Fn key to "Do Nothing" in System Settings → Keyboard
+8. Hold Fn key to record, release to transcribe!
+9. Select text anywhere, then press Fn+Control to hear it spoken!
 
 ## API Documentation
-See `/Users/llkj/Documents/DOCS/openai_speech_to_text` for full API docs.
+- STT: See `/Users/llkj/Documents/DOCS/openai_speech_to_text.md`
+- TTS: See `/Users/llkj/Documents/DOCS/openai_text_to_speech.md`
 
-## Approved Plan
-See `/Users/llkj/.claude/plans/glowing-jumping-thacker.md` for the full implementation plan.

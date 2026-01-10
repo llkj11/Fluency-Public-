@@ -20,6 +20,9 @@
 		F000000D001 /* AudioFeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F000000D000 /* AudioFeedbackService.swift */; };
 		F000000E001 /* StatsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F000000E000 /* StatsService.swift */; };
 		F000000F001 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F000000F000 /* StatsView.swift */; };
+		F0000010001 /* TTSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000010000 /* TTSService.swift */; };
+		F0000011001 /* TextCaptureService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000011000 /* TextCaptureService.swift */; };
+		F0000012001 /* SpeakingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000012000 /* SpeakingOverlay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +42,9 @@
 		F000000D000 /* AudioFeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFeedbackService.swift; sourceTree = "<group>"; };
 		F000000E000 /* StatsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsService.swift; sourceTree = "<group>"; };
 		F000000F000 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		F0000010000 /* TTSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSService.swift; sourceTree = "<group>"; };
+		F0000011000 /* TextCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCaptureService.swift; sourceTree = "<group>"; };
+		F0000012000 /* SpeakingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeakingOverlay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +104,8 @@
 				F0000006000 /* PasteService.swift */,
 				F000000D000 /* AudioFeedbackService.swift */,
 				F000000E000 /* StatsService.swift */,
+				F0000010000 /* TTSService.swift */,
+				F0000011000 /* TextCaptureService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -110,6 +118,7 @@
 				F0000009000 /* HistoryView.swift */,
 				F000000A000 /* SettingsView.swift */,
 				F000000F000 /* StatsView.swift */,
+				F0000012000 /* SpeakingOverlay.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -203,6 +212,9 @@
 				F000000D001 /* AudioFeedbackService.swift in Sources */,
 				F000000E001 /* StatsService.swift in Sources */,
 				F000000F001 /* StatsView.swift in Sources */,
+				F0000010001 /* TTSService.swift in Sources */,
+				F0000011001 /* TextCaptureService.swift in Sources */,
+				F0000012001 /* SpeakingOverlay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
