@@ -19,7 +19,7 @@ class SyncService {
     }
     
     private var baseURL: String {
-        "http://\(serverURL):8787/api/fluency"
+        "http://\(serverURL):7006/api/fluency"
     }
     
     init() {
