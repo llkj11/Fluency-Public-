@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD65DAD7A368BE2BA44813FD /* MainAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FC6743F37560A22EC1C974 /* MainAppView.swift */; };
 		F0000001001 /* FluencyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000001000 /* FluencyApp.swift */; };
 		F0000002001 /* Transcription.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000002000 /* Transcription.swift */; };
 		F0000003001 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000003000 /* AudioRecorder.swift */; };
@@ -27,9 +28,12 @@
 		F0000014001 /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000014000 /* SyncService.swift */; };
 		F0000015001 /* TranscriptionsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000015000 /* TranscriptionsDetailView.swift */; };
 		F0000016001 /* WordsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000016000 /* WordsDetailView.swift */; };
+		F246672EF5A903D8044CE885 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17D3AA5D14AD3D86938C5AE9 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17D3AA5D14AD3D86938C5AE9 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Assets.xcassets; sourceTree = "<group>"; };
+		27FC6743F37560A22EC1C974 /* MainAppView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MainAppView.swift; path = MainAppView.swift; sourceTree = "<group>"; };
 		F0000000000 /* Fluency.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluency.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0000001000 /* FluencyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluencyApp.swift; sourceTree = "<group>"; };
 		F0000002000 /* Transcription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transcription.swift; sourceTree = "<group>"; };
@@ -131,6 +135,7 @@
 				F0000012000 /* SpeakingOverlay.swift */,
 				F0000015000 /* TranscriptionsDetailView.swift */,
 				F0000016000 /* WordsDetailView.swift */,
+				27FC6743F37560A22EC1C974 /* MainAppView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -139,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				F000000B000 /* Info.plist */,
+				17D3AA5D14AD3D86938C5AE9 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -201,6 +207,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F246672EF5A903D8044CE885 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +238,7 @@
 				F0000012001 /* SpeakingOverlay.swift in Sources */,
 				F0000015001 /* TranscriptionsDetailView.swift in Sources */,
 				F0000016001 /* WordsDetailView.swift in Sources */,
+				CD65DAD7A368BE2BA44813FD /* MainAppView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -5,6 +5,7 @@ struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.modelContext) private var modelContext
     var openSettingsAction: (() -> Void)? = nil
+    var openMainAppAction: (() -> Void)? = nil
     @Query(sort: \Transcription.createdAt, order: .reverse) private var transcriptions: [Transcription]
 
     @State private var selectedTab = 0
@@ -69,6 +70,17 @@ struct MenuBarView: View {
             }
             
             Spacer()
+            
+            // Open main app button
+            Button {
+                openMainAppAction?()
+            } label: {
+                Image(systemName: "macwindow")
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .help("Open Fluency")
             
             // Settings button
             Button {

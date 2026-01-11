@@ -30,6 +30,10 @@ struct SettingsView: View {
     // Lock States (Prevent accidental edits)
     @State private var isOpenAILocked = true
     @State private var isGeminiLocked = true
+    
+    // Server connection state
+    @State private var isServerConnected = false
+    @State private var isTestingConnection = false
     @State private var isGroqLocked = true
     
     enum VerificationResult {
@@ -466,20 +470,30 @@ struct SettingsView: View {
                     
                     HStack {
                         StatusIndicator(
-                            isOn: SyncService.shared.isConnected,
+                            isOn: isServerConnected,
                             onText: "Connected to Server",
                             offText: "Server Disconnected"
                         )
                         
                         Spacer()
                         
-                        Button("Test Connection") {
+                        Button(isTestingConnection ? "Testing..." : "Test Connection") {
+                            isTestingConnection = true
                             Task {
-                                _ = await SyncService.shared.testConnection()
+                                let result = await SyncService.shared.testConnection()
+                                await MainActor.run {
+                                    isServerConnected = result
+                                    isTestingConnection = false
+                                }
                             }
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
+                        .disabled(isTestingConnection)
+                    }
+                    .task {
+                        // Check connection on view appear
+                        isServerConnected = await SyncService.shared.testConnection()
                     }
                 }
             } header: {

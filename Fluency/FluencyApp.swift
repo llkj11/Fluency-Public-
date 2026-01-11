@@ -4,8 +4,8 @@ import SwiftData
 @main
 struct FluencyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
-    var sharedModelContainer: ModelContainer = {
+    
+    static var sharedModelContainer: ModelContainer = {
         let schema = Schema([Transcription.self])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -16,6 +16,10 @@ struct FluencyApp: App {
         }
     }()
 
+    var sharedModelContainer: ModelContainer {
+        FluencyApp.sharedModelContainer
+    }
+
     var body: some Scene {
         Settings {
             SettingsView()
@@ -23,9 +27,14 @@ struct FluencyApp: App {
         }
 
         MenuBarExtra {
-            MenuBarView(openSettingsAction: {
-                appDelegate.openSettings()
-            })
+            MenuBarView(
+                openSettingsAction: {
+                    appDelegate.openSettings()
+                },
+                openMainAppAction: {
+                    appDelegate.openMainApp()
+                }
+            )
                 .modelContainer(sharedModelContainer)
                 .environmentObject(appDelegate.appState)
         } label: {
@@ -37,13 +46,14 @@ struct FluencyApp: App {
 }
 
 @MainActor
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let appState = AppState()
     var overlayWindow: NSWindow?
     var overlayHostingView: NSHostingView<AnyView>?
     var speakingOverlayWindow: NSWindow?
     var speakingOverlayHostingView: NSHostingView<AnyView>?
     var settingsWindow: NSWindow?
+    var mainAppWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupOverlayWindow()
@@ -55,6 +65,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self?.updateSpeakingOverlay(isSpeaking: isSpeaking)
         }
         appState.startServices()
+        
+        // Test server connection on launch
+        Task {
+            _ = await SyncService.shared.testConnection()
+        }
+        
+        // Open main app window on launch
+        openMainApp()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -84,6 +102,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentView = NSHostingView(rootView: settingsView)
         window.isReleasedWhenClosed = false
         self.settingsWindow = window
+    }
+    
+    func openMainApp() {
+        if mainAppWindow == nil {
+            setupMainAppWindow()
+        }
+        mainAppWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        
+        // Show in Dock
+        NSApp.setActivationPolicy(.regular)
+    }
+    
+    private func setupMainAppWindow() {
+        let mainView = MainAppView()
+            .environmentObject(appState)
+            .modelContainer(FluencyApp.sharedModelContainer)
+        
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 650, height: 550),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.center()
+        window.title = "Fluency"
+        window.contentView = NSHostingView(rootView: mainView)
+        window.isReleasedWhenClosed = false
+        window.delegate = self
+        self.mainAppWindow = window
+    }
+    
+    // MARK: - NSWindowDelegate
+    
+    nonisolated func windowWillClose(_ notification: Notification) {
+        Task { @MainActor in
+            // Hide from Dock when main window closes
+            if notification.object as? NSWindow == mainAppWindow {
+                NSApp.setActivationPolicy(.accessory)
+            }
+        }
     }
 
     private func setupOverlayWindow() {
