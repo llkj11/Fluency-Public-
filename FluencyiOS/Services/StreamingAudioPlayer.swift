@@ -17,8 +17,8 @@ class StreamingAudioPlayer {
     private var pendingBuffers = 0
     private let bufferLock = NSLock()
     
-    /// Minimum bytes before starting playback (reduces choppy start)
-    private let minBufferBytes = 4800 // ~100ms at 24kHz 16-bit
+    /// Minimum bytes before starting playback (allows beep to complete + reduces choppy start)
+    private let minBufferBytes = 24000 // ~500ms at 24kHz 16-bit mono
     private var initialBuffer = Data()
     private var hasStartedPlayback = false
     
