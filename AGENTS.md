@@ -2,5 +2,5 @@
 -Verify all builds succeed in XCode after making major/minor changes. 
 -After changes, add appropriate files to XCode. Do not ask the user to do this. 
 -When interacting with or having issues with the external server API at (10.69.1.250), make sure to use the server-browser MCP available to you to check the server directly. Also get back to me on any issues you had with the MCP and high-level solutions so I can improve it. 
--Documents are in the Docs folder in the Documents on Home for reference. 
+-Documents are in the Docs folder in the Documents on Home on this Macbook for reference. 
 -Don't worry about the iOS app for now. I'm not willing to pay the dev fee yet so it's currently disabled. 
