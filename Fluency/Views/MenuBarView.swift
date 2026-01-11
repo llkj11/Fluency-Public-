@@ -363,7 +363,7 @@ struct CompactTranscriptionRow: View {
             
             Spacer()
             
-            Text(transcription.createdAt, style: .relative)
+            Text(transcription.createdAt, format: .dateTime.month().day().hour().minute())
                 .font(.system(size: 10))
                 .foregroundColor(.secondary)
             
@@ -394,7 +394,7 @@ struct TranscriptionRow: View {
                     .lineLimit(2)
                     .truncationMode(.tail)
 
-                Text(transcription.createdAt, style: .relative)
+                Text(transcription.createdAt, format: .dateTime.month().day().hour().minute())
                     .font(.system(size: 10))
                     .foregroundColor(.secondary)
             }

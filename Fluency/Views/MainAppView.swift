@@ -323,7 +323,7 @@ struct TranscriptionCard: View {
                     .lineLimit(2)
                 
                 HStack(spacing: 8) {
-                    Text(transcription.createdAt, style: .relative)
+                    Text(transcription.createdAt, format: .dateTime.month().day().hour().minute())
                     Text("•")
                     Text("\(transcription.wordCount) words")
                 }
