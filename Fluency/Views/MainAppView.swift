@@ -50,6 +50,22 @@ struct MainAppView: View {
             serverStats = await StatsService.shared.fetchStats()
             wordStats = await StatsService.shared.fetchWordStats()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .newTranscription)) { notification in
+            // Save transcription to SwiftData
+            if let userInfo = notification.userInfo,
+               let text = userInfo["text"] as? String,
+               let duration = userInfo["duration"] as? TimeInterval {
+                let transcription = Transcription(text: text, duration: duration)
+                modelContext.insert(transcription)
+                try? modelContext.save()
+                
+                // Refresh stats
+                Task {
+                    serverStats = await StatsService.shared.fetchStats()
+                    wordStats = await StatsService.shared.fetchWordStats()
+                }
+            }
+        }
     }
     
     // MARK: - Header
