@@ -34,6 +34,14 @@
 
 1.  **Launch the App**: Open **Fluency.app**.
 2.  **Permissions**: Grant **Accessibility** and **Microphone** permissions when prompted (required for hotkeys and audio capture).
+
+### Customizing Hotkeys
+Open **Settings → Keyboard Shortcuts** to customize your global hotkeys:
+- **Start Recording**: Default `Fn` (hold to record)
+- **Cancel Recording**: Default `Control + Fn`
+- **Read Aloud (TTS)**: Default `Option + Fn`
+
+Click the keyboard icon next to any action to toggle secondary modifiers (Option, Control, Shift, Command).
 3.  **API Configuration**:
     - Open **Settings** (Click menu bar icon -> Settings).
     - Enter your **OpenAI API Key** (for Dictation & TTS).
