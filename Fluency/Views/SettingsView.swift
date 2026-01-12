@@ -369,6 +369,28 @@ struct SettingsView: View {
                     .font(.caption)
             }
             
+            // MARK: - Shortcuts Section
+            Section {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(HotkeyAction.allCases, id: \.self) { action in
+                        HotkeyRow(action: action, hotkeyConfig: FluencyApp.sharedHotkeyConfig)
+                    }
+                    
+                    Divider()
+                    
+                    Button("Reset All to Defaults") {
+                        FluencyApp.sharedHotkeyConfig.resetToDefaults()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.secondary)
+                }
+            } header: {
+                Text("Keyboard Shortcuts")
+            } footer: {
+                Text("Configure global hotkeys for recording and TTS.")
+                    .font(.caption)
+            }
+            
             Section {
                 VStack(alignment: .leading, spacing: 12) {
                     // TTS Provider
@@ -889,6 +911,93 @@ struct ThemeRow: View {
         let colors = tempManager.colors
         tempManager.currentTheme = originalTheme
         return colors
+    }
+}
+
+// MARK: - Hotkey Row
+
+struct HotkeyRow: View {
+    let action: HotkeyAction
+    let hotkeyConfig: HotkeyConfigurationManager
+    
+    @State private var isRecording = false
+    @State private var selectedSecondary: Set<ModifierKey> = []
+    
+    var binding: HotkeyBinding {
+        hotkeyConfig.binding(for: action)
+    }
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(action.displayName)
+                    .font(.system(size: 13, weight: .medium))
+                Text(action.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            // Current shortcut display
+            Text(binding.displayString)
+                .font(.system(size: 13, weight: .medium, design: .monospaced))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.secondary.opacity(0.15))
+                )
+            
+            // Modifier picker for secondary modifiers
+            Menu {
+                ForEach(secondaryModifierOptions, id: \.self) { modifier in
+                    Button {
+                        toggleSecondaryModifier(modifier)
+                    } label: {
+                        HStack {
+                            Text("\(modifier.symbol) \(modifier.displayName)")
+                            if binding.secondaryModifiers.contains(modifier) {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+                
+                Divider()
+                
+                Button("Reset to Default") {
+                    hotkeyConfig.resetToDefault(action: action)
+                }
+            } label: {
+                Image(systemName: "keyboard")
+                    .foregroundColor(.accentColor)
+            }
+            .menuStyle(.borderlessButton)
+            .frame(width: 30)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private var secondaryModifierOptions: [ModifierKey] {
+        // Don't show Fn as secondary - it's always primary for now
+        ModifierKey.allCases.filter { $0 != .fn }
+    }
+    
+    private func toggleSecondaryModifier(_ modifier: ModifierKey) {
+        var newSecondary = binding.secondaryModifiers
+        if newSecondary.contains(modifier) {
+            newSecondary.remove(modifier)
+        } else {
+            newSecondary.insert(modifier)
+        }
+        
+        let newBinding = HotkeyBinding(
+            primaryModifier: binding.primaryModifier,
+            secondaryModifiers: newSecondary,
+            requiresHold: binding.requiresHold
+        )
+        hotkeyConfig.updateBinding(for: action, to: newBinding)
     }
 }
 

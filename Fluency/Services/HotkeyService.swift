@@ -10,13 +10,22 @@ class HotkeyService {
     private var optionWasPressed = false
     private var controlWasPressed = false
     private var retryTimer: Timer?
+    
+    private let hotkeyConfig: HotkeyConfigurationManager
 
     private let onRecordingStart: () -> Void
     private let onRecordingStop: () -> Void
     private let onRecordingCancel: () -> Void
     private let onTTSTriggered: () -> Void
 
-    init(onRecordingStart: @escaping () -> Void, onRecordingStop: @escaping () -> Void, onRecordingCancel: @escaping () -> Void = {}, onTTSTriggered: @escaping () -> Void = {}) {
+    init(
+        hotkeyConfig: HotkeyConfigurationManager,
+        onRecordingStart: @escaping () -> Void,
+        onRecordingStop: @escaping () -> Void,
+        onRecordingCancel: @escaping () -> Void = {},
+        onTTSTriggered: @escaping () -> Void = {}
+    ) {
+        self.hotkeyConfig = hotkeyConfig
         self.onRecordingStart = onRecordingStart
         self.onRecordingStop = onRecordingStop
         self.onRecordingCancel = onRecordingCancel
@@ -90,35 +99,28 @@ class HotkeyService {
     }
 
     private var startRecordingWorkItem: DispatchWorkItem?
+    private var ttsTriggered = false
+    private var cancelTriggered = false
 
     private func handleFlagsChanged(event: NSEvent) {
         let flags = event.modifierFlags
         let keyCode = event.keyCode
 
-        // The Fn key sets the "function" bit in modifier flags
-        let fnIsPressed = flags.contains(.function)
-        let optionIsPressed = flags.contains(.option)
+        // Check which configured actions match the current modifier state
+        let matchesSTT = hotkeyConfig.matchesAction(.startRecording, flags: flags)
+        let matchesCancel = hotkeyConfig.matchesAction(.cancelRecording, flags: flags)
+        let matchesTTS = hotkeyConfig.matchesAction(.triggerTTS, flags: flags)
+        
+        // Get the primary modifier for STT to detect release
+        let sttBinding = hotkeyConfig.binding(for: .startRecording)
+        let primaryPressed = flags.contains(sttBinding.primaryModifier.nsEventFlag)
 
         // Debug: print all flag changes
-        print("🔑 Flags: keyCode=\(keyCode), fn=\(fnIsPressed), option=\(optionIsPressed), fnPressed=\(fnPressed), raw=\(flags.rawValue)")
+        print("🔑 Flags: keyCode=\(keyCode), stt=\(matchesSTT), cancel=\(matchesCancel), tts=\(matchesTTS), fnPressed=\(fnPressed), raw=\(flags.rawValue)")
 
-        // Check if ONLY Fn is pressed (no other modifiers except function)
-        let fnOnly = fnIsPressed &&
-                     !flags.contains(.command) &&
-                     !flags.contains(.option) &&
-                     !flags.contains(.shift) &&
-                     !flags.contains(.control)
-        
-        // Check for Option+Fn combination (for TTS)
-        let optionAndFn = optionIsPressed && fnIsPressed &&
-                          !flags.contains(.command) &&
-                          !flags.contains(.shift) &&
-                          !flags.contains(.control)
-
-        // Handle Option + Fn for TTS
-        // Trigger when Fn becomes pressed while Option is held, OR when Option becomes pressed while Fn is held
-        if optionAndFn && !optionWasPressed {
-            optionWasPressed = true
+        // Handle TTS trigger (tap action, not hold)
+        if matchesTTS && !ttsTriggered {
+            ttsTriggered = true
             
             // Cancel any pending STT start
             startRecordingWorkItem?.cancel()
@@ -133,28 +135,21 @@ class HotkeyService {
             // Reset fnPressed so we don't trigger STT when releasing
             fnPressed = false
             
-            print("🔊 Option+Fn combination detected - triggering TTS!")
+            print("🔊 TTS hotkey detected - triggering TTS!")
             DispatchQueue.main.async { [weak self] in
                 self?.onTTSTriggered()
             }
             return // Skip further processing
         }
         
-        // Reset optionWasPressed when the combination is broken
-        if !optionAndFn {
-            optionWasPressed = false
+        // Reset TTS trigger when the combination is broken
+        if !matchesTTS {
+            ttsTriggered = false
         }
         
-        // Check for Control+Fn combination (for cancel)
-        let controlIsPressed = flags.contains(.control)
-        let controlAndFn = controlIsPressed && fnIsPressed &&
-                           !flags.contains(.command) &&
-                           !flags.contains(.option) &&
-                           !flags.contains(.shift)
-        
-        // Handle Control + Fn for Cancel
-        if controlAndFn && !controlWasPressed {
-            controlWasPressed = true
+        // Handle Cancel trigger (tap action, not hold)
+        if matchesCancel && !cancelTriggered {
+            cancelTriggered = true
             
             // Cancel any pending STT start
             startRecordingWorkItem?.cancel()
@@ -162,7 +157,7 @@ class HotkeyService {
             
             // If we were recording, cancel it (don't process)
             if isRecording {
-                print("❌ Control+Fn - cancelling recording!")
+                print("❌ Cancel hotkey - cancelling recording!")
                 cancelRecording()
             }
             
@@ -171,14 +166,13 @@ class HotkeyService {
             return // Skip further processing
         }
         
-        // Reset controlWasPressed when the combination is broken
-        if !controlAndFn {
-            controlWasPressed = false
+        // Reset cancel trigger when the combination is broken
+        if !matchesCancel {
+            cancelTriggered = false
         }
 
-        // Handle Fn-only for recording (STT)
-        // Only start if Option is NOT pressed
-        if fnOnly && !fnPressed && !optionIsPressed {
+        // Handle STT (hold action)
+        if matchesSTT && !fnPressed && !ttsTriggered && !cancelTriggered {
             fnPressed = true
             
             // Cancel any existing work item
@@ -186,16 +180,16 @@ class HotkeyService {
             
             let workItem = DispatchWorkItem { [weak self] in
                 guard let self = self, self.fnPressed else { return }
-                print("🎙️ Fn pressed (debounced) - starting recording!")
+                print("🎙️ STT hotkey (debounced) - starting recording!")
                 self.startRecording()
             }
             
             startRecordingWorkItem = workItem
-            // Short delay to allow for Option+Fn sequence
+            // Short delay to allow for modifier combinations
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: workItem)
             
-        } else if !fnIsPressed && fnPressed {
-            // Fn released
+        } else if !primaryPressed && fnPressed {
+            // Primary modifier released
             fnPressed = false
             
             // Cancel pending start if any
@@ -203,7 +197,7 @@ class HotkeyService {
             startRecordingWorkItem = nil
             
             if isRecording {
-                print("⏹️ Fn released - stopping recording!")
+                print("⏹️ Primary modifier released - stopping recording!")
                 stopRecording()
             }
         }

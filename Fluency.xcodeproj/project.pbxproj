@@ -40,6 +40,7 @@
 		F0000015001 /* TranscriptionsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000015000 /* TranscriptionsDetailView.swift */; };
 		F0000016001 /* WordsDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000016000 /* WordsDetailView.swift */; };
 		F0000017001 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000017000 /* ThemeManager.swift */; };
+		F000001A001 /* HotkeyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F000001A000 /* HotkeyConfiguration.swift */; };
 		F0000019001 /* ThemeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0000019000 /* ThemeManagerTests.swift */; };
 		F246672EF5A903D8044CE885 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17D3AA5D14AD3D86938C5AE9 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -74,6 +75,7 @@
 		F0000016000 /* WordsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsDetailView.swift; sourceTree = "<group>"; };
 		F0000017000 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		F0000019000 /* ThemeManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManagerTests.swift; sourceTree = "<group>"; };
+		F000001A000 /* HotkeyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				F0000014000 /* SyncService.swift */,
 				F0000011000 /* TextCaptureService.swift */,
 				F0000017000 /* ThemeManager.swift */,
+				F000001A000 /* HotkeyConfiguration.swift */,
 				1B725D2677A2E3BB94AB297E /* StreamingAudioPlayer.swift */,
 			);
 			path = Services;
@@ -311,6 +314,7 @@
 				CD65DAD7A368BE2BA44813FD /* MainAppView.swift in Sources */,
 				300E0AC2E26928233E0E6A72 /* StreamingAudioPlayer.swift in Sources */,
 				F0000017001 /* ThemeManager.swift in Sources */,
+				F000001A001 /* HotkeyConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

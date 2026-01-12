@@ -17,6 +17,7 @@ struct FluencyApp: App {
     }()
     
     static let sharedThemeManager = ThemeManager()
+    static let sharedHotkeyConfig = HotkeyConfigurationManager()
 
     var sharedModelContainer: ModelContainer {
         FluencyApp.sharedModelContainer
@@ -298,6 +299,7 @@ class AppState: ObservableObject {
         textCaptureService = TextCaptureService()
 
         hotkeyService = HotkeyService(
+            hotkeyConfig: FluencyApp.sharedHotkeyConfig,
             onRecordingStart: { [weak self] in
                 Task { @MainActor in
                     self?.startRecording()
