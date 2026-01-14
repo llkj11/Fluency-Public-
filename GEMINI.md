@@ -1,9 +1,7 @@
--Make a new commit and push with every major change. (Ask user which branch to push to if unsure.)
-    Preferably, make a new branch for each feature and push to that branch. Then ask the user if they want to merge to alpha or main. 
 -Verify all builds succeed in XCode after making major/minor changes. 
 -After changes, add appropriate files to XCode. Do not ask the user to do this. 
 -When interacting with or having issues with the external server API at (10.69.1.250), make sure to use the server-browser MCP available to you to check the server directly. Also get back to me on any issues you had with the MCP and high-level solutions so I can improve it. 
--Documents are in the Docs folder in the Documents on Home on this Macbook for reference. 
 -Don't worry about the iOS app for now. I'm not willing to pay the dev fee yet so it's currently disabled. 
 -Update the README.md file with any new changes to shortcuts or major User Experience changes. 
 -Run the test suite after every change and make sure all tests pass. 
+-Make sure to use the skills available to you and know when to use them. 
