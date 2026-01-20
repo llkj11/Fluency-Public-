@@ -60,9 +60,9 @@ On first launch, grant these permissions when prompted:
 
 You can also enable these in **System Settings > Privacy & Security**.
 
-### 2. Get API Keys
+### 2. Get API Keys (Required Before Use)
 
-You'll need at least an OpenAI key. Gemini is optional but enables additional TTS voices and vision features.
+**You must enter at least an OpenAI API key before dictation or TTS will work.** Gemini is optional but enables additional TTS voices and vision features.
 
 | Provider | Get Key | Required For |
 |----------|---------|--------------|
