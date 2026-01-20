@@ -7,8 +7,13 @@ class StatsService {
     private let serverURLKey = "com.fluency.serverURL"
     
     var serverURL: String {
-        get { UserDefaults.standard.string(forKey: serverURLKey) ?? "10.69.1.250" }
+        get { UserDefaults.standard.string(forKey: serverURLKey) ?? "" }
         set { UserDefaults.standard.set(newValue, forKey: serverURLKey) }
+    }
+
+    /// Returns true if sync is enabled (server URL is configured)
+    var isSyncEnabled: Bool {
+        !serverURL.trimmingCharacters(in: .whitespaces).isEmpty
     }
     
     private var baseURL: String {

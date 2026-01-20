@@ -499,7 +499,7 @@ struct SettingsView: View {
                     Text("Home Server URL")
                         .font(.headline)
                     
-                    TextField("10.69.1.250", text: Binding(
+                    TextField("192.168.1.100", text: Binding(
                         get: { SyncService.shared.serverURL },
                         set: { SyncService.shared.serverURL = $0 }
                     ))
@@ -536,7 +536,7 @@ struct SettingsView: View {
             } header: {
                 Text("Server Sync")
             } footer: {
-                Text("Transcriptions and stats sync to port 7006 on your home server.")
+                Text("Optional: Sync transcriptions and stats to a local server on port 7006.")
                     .font(.caption)
             }
 

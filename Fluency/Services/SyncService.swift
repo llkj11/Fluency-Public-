@@ -1,19 +1,25 @@
 import Foundation
 
-/// Service for syncing transcriptions and stats to the server at 10.69.1.250 on port 7006
+/// Service for syncing transcriptions and stats to a local server
+/// Server sync is disabled by default. Configure a server URL in Settings to enable.
 class SyncService {
     static let shared = SyncService()
-    
+
     private let serverURLKey = "com.fluency.serverURL"
     var isConnected = false
-    
+
     var serverURL: String {
         get {
-            UserDefaults.standard.string(forKey: serverURLKey) ?? "10.69.1.250"
+            UserDefaults.standard.string(forKey: serverURLKey) ?? ""
         }
         set {
             UserDefaults.standard.set(newValue, forKey: serverURLKey)
         }
+    }
+
+    /// Returns true if sync is enabled (server URL is configured)
+    var isSyncEnabled: Bool {
+        !serverURL.trimmingCharacters(in: .whitespaces).isEmpty
     }
     
     private var baseURL: String {
@@ -21,8 +27,9 @@ class SyncService {
     }
     
     // MARK: - Connection Test
-    
+
     func testConnection() async -> Bool {
+        guard isSyncEnabled else { return false }
         guard let url = URL(string: "\(baseURL)/ping") else { return false }
         
         var request = URLRequest(url: url)
@@ -44,9 +51,9 @@ class SyncService {
     }
     
     // MARK: - Sync Transcription
-    
+
     func syncTranscription(_ transcription: Transcription) async {
-        guard await testConnection() else { return }
+        guard isSyncEnabled, await testConnection() else { return }
         
         guard let url = URL(string: "\(baseURL)/transcriptions") else { return }
         
@@ -81,9 +88,9 @@ class SyncService {
     }
     
     // MARK: - Sync Stats
-    
+
     func syncStats() async {
-        guard await testConnection() else { return }
+        guard isSyncEnabled, await testConnection() else { return }
         
         guard let url = URL(string: "\(baseURL)/stats") else { return }
         
