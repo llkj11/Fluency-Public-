@@ -1,69 +1,140 @@
 # Fluency
 
-**Fluency** is a powerful macOS utility that bridges the gap between your thoughts and your screen. It provides seamless, global Speech-to-Text (Dictation) and Text-to-Speech (TTS) capabilities using advanced AI models from **OpenAI** and **Google Gemini**.
+A macOS menu bar app for global AI-powered dictation and text-to-speech. Use your own API keys - no subscriptions, no usage limits beyond what you pay for.
+
+Built as an alternative to Whisper Flow and similar services.
 
 ## Features
 
-### 🎙️ AI Dictation (Speech-to-Text)
-- **Global Hotkey**: Hold `Fn` key to speak, release to stop.
-- **GPT-4o Mini Integration**: Uses OpenAI's fast and accurate `gpt-4o-mini-transcribe` model.
-- **Smart Formatting**: Automatically handles punctuation and formatting.
-- **Auto-Paste**: Inserts transcribed text directly into your active application.
+### Dictation (Speech-to-Text)
+- **Global hotkey**: Hold `Fn` to speak, release to transcribe
+- **Auto-paste**: Transcribed text inserts directly into your active app
+- Uses OpenAI's `gpt-4o-mini-transcribe` model
 
-### 🗣️ AI Text-to-Speech (TTS)
-- **Global Hotkey**: Select text, then hold `Option` and press `Fn` to hear it read aloud.
-- **Multi-Provider Support**:
-  - **OpenAI**: Uses `gpt-4o-mini-tts` for natural, human-like speech.
-  - **Google Gemini**: Uses `gemini-2.5-flash-preview` for expressive, director-controlled performances.
-- **Voice Presets**: Choose from 5 built-in styles (Neutral, Cheerful, Calm, Professional, Storyteller) or create your own custom presets.
-- **Visual Overlay**: Beautiful animated waveform overlay while speaking.
-- **30+ Voices**: Access a massive library of voices from both providers.
+### Text-to-Speech
+- **Global hotkey**: Select text, hold `Option + Fn` to hear it read aloud
+- **Multiple providers**: OpenAI (`gpt-4o-mini-tts`) or Google Gemini (`gemini-2.5-flash-preview`)
+- **30+ voices** with 5 built-in presets (Neutral, Cheerful, Calm, Professional, Storyteller)
+- **Custom presets**: Create your own voice + style combinations
 
-### 👁️ Screen Intelligence (Vision)
-- **Smart OCR**: Press `Fn + Shift`, select a screen region, and Fluency extracts and reads the text aloud.
-- **Scene Description**: Press `Fn + Shift + Option`, select a region, and Fluency describes the visual content (charts, images, diagrams, code).
-- **Gemini 3 Flash**: Uses Google's fastest vision model with minimal latency for quick analysis.
-- **Automatic TTS**: Extracted text or descriptions are immediately spoken using your TTS settings.
+### Screen Intelligence
+- **Smart OCR**: `Fn + Shift` + select region to extract and read text
+- **Scene Description**: `Fn + Shift + Option` + select region to describe visual content
+- Uses Google Gemini Flash for fast vision analysis
 
-### 🎨 Global Themes
-- **Customize Your Experience**: Choose from 6 unique themes that transform the app's colors, fonts, and styling.
-- **Available Themes**:
-  - **Aurora**: Vibrant purple to cyan gradient (Default).
-  - **Midnight**: Deep indigo and electric blue.
-  - **Ember**: Warm orange and deep red.
-  - **Forest**: Emerald green and teal.
-  - **Monochrome**: Minimal grayscale.
-  - **Sakura**: Soft pink and lavender.
-- **Persistent Selection**: Your chosen theme is automatically saved across sessions.
+### Themes
+6 color themes: Aurora (default), Midnight, Ember, Forest, Monochrome, Sakura
+
+---
+
+## Installation
+
+### Option 1: Download Release (Recommended)
+1. Go to [Releases](../../releases)
+2. Download the latest `Fluency.zip`
+3. Unzip and drag `Fluency.app` to your Applications folder
+4. Right-click and select "Open" (first launch only, to bypass Gatekeeper)
+
+### Option 2: Build from Source
+Requires Xcode 15+ and macOS 13.0+
+
+```bash
+git clone https://github.com/llkj11/fluency.git
+cd fluency
+open Fluency.xcodeproj
+```
+
+In Xcode:
+1. Select the "Fluency" scheme
+2. Set signing team to your Apple Developer account (or Personal Team)
+3. Build and run (`Cmd + R`)
+
+---
 
 ## Setup
 
-1.  **Launch the App**: Open **Fluency.app**.
-2.  **Permissions**: Grant **Accessibility** and **Microphone** permissions when prompted (required for hotkeys and audio capture).
+### 1. Grant Permissions
+On first launch, grant these permissions when prompted:
+- **Accessibility**: Required for global hotkeys and auto-paste
+- **Microphone**: Required for dictation
 
-### Customizing Hotkeys
-Open **Settings → Keyboard Shortcuts** to customize your global hotkeys:
-- **Start Recording**: Default `Fn` (hold to record)
-- **Cancel Recording**: Default `Control + Fn`
-- **Read Aloud (TTS)**: Default `Option + Fn`
+You can also enable these in **System Settings > Privacy & Security**.
 
-Click the keyboard icon next to any action to toggle secondary modifiers (Option, Control, Shift, Command).
-3.  **API Configuration**:
-    - Open **Settings** (Click menu bar icon -> Settings).
-    - Enter your **OpenAI API Key** (for Dictation & TTS).
-    - Enter your **Google Gemini API Key** (optional, for Gemini TTS).
-4.  **Select Provider**: Choose your preferred TTS provider in Settings.
+### 2. Get API Keys
+
+You'll need at least an OpenAI key. Gemini is optional but enables additional TTS voices and vision features.
+
+| Provider | Get Key | Required For |
+|----------|---------|--------------|
+| OpenAI | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | Dictation, TTS |
+| Google Gemini | [aistudio.google.com/apikey](https://aistudio.google.com/app/apikey) | Gemini TTS, Vision/OCR |
+
+**Cost estimates** (as of Jan 2025):
+- Dictation: ~$0.001 per minute of audio
+- TTS: ~$0.015 per 1000 characters
+- Vision: ~$0.001 per image
+
+### 3. Configure Fluency
+1. Click the Fluency icon in your menu bar
+2. Open **Settings**
+3. Enter your API keys
+4. Select your preferred TTS provider
+
+---
 
 ## Usage
 
-| Feature | Action |
-| :--- | :--- |
-| **Dictate** | Hold `Fn`, speak, then release |
-| **Read Selected Text** | Highlight text, then hold `Option` and press `Fn` |
-| **Stop Reading** | Hold `Option` then press `Fn` |
-| **Smart OCR** | Press `Fn + Shift`, select region |
-| **Scene Description** | Press `Fn + Shift + Option`, select region |
+| Action | Hotkey |
+|--------|--------|
+| Dictate | Hold `Fn`, speak, release |
+| Read selected text | Select text, then `Option + Fn` |
+| Stop reading | `Option + Fn` |
+| Smart OCR | `Fn + Shift`, select region |
+| Describe screen | `Fn + Shift + Option`, select region |
+| Cancel recording | `Control + Fn` |
+
+### Customizing Hotkeys
+Open **Settings > Keyboard Shortcuts** to change any hotkey. Click the modifier icons to add Option, Control, Shift, or Command.
+
+---
+
+## Troubleshooting
+
+### "Fluency can't be opened because it is from an unidentified developer"
+Right-click the app and select "Open", then click "Open" in the dialog.
+
+### Dictation not working
+1. Check microphone permission in System Settings > Privacy & Security > Microphone
+2. Verify your OpenAI API key is entered correctly
+3. Check your OpenAI account has credits
+
+### Hotkeys not responding
+1. Check accessibility permission in System Settings > Privacy & Security > Accessibility
+2. Try toggling the permission off and on
+3. Restart Fluency
+
+### TTS sounds robotic or cuts off
+- Try switching between OpenAI and Gemini providers
+- Check your internet connection
+- Longer text may take a moment to process
+
+---
 
 ## Requirements
-- macOS 13.0 (Ventura) or later.
-- Active internet connection (for API calls).
+
+- macOS 13.0 (Ventura) or later
+- Internet connection
+- OpenAI API key (required)
+- Google Gemini API key (optional)
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE)
+
+---
+
+## Acknowledgments
+
+Built with SwiftUI. Uses OpenAI and Google Gemini APIs.

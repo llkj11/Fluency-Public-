@@ -33,3 +33,21 @@ xcuserdata/
 
 # Build artifacts
 *.app
+
+# Environment & Secrets
+.env
+.env.local
+.env.*
+*.key
+*.pem
+.secrets/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

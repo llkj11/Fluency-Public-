@@ -25,7 +25,7 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<true/>
+		<false/>
 	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Fluency needs microphone access to record your voice for transcription.</string>
