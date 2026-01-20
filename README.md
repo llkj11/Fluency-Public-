@@ -30,10 +30,15 @@ Built as an alternative to Whisper Flow and similar services.
 ## Installation
 
 ### Option 1: Download Release (Recommended)
-1. Go to [Releases](../../releases)
-2. Download the latest `Fluency.zip`
-3. Unzip and drag `Fluency.app` to your Applications folder
-4. Right-click and select "Open" (first launch only, to bypass Gatekeeper)
+1. Download the latest `Fluency.zip` from [Releases](../../releases)
+2. Unzip and drag `Fluency.app` to your Applications folder
+3. Open Terminal and run:
+   ```bash
+   xattr -cr /Applications/Fluency.app
+   ```
+4. Double-click Fluency to launch
+
+> **Note**: The Terminal command is required because the app isn't notarized with Apple. It removes the quarantine flag macOS adds to downloaded files.
 
 ### Option 2: Build from Source
 Requires Xcode 15+ and macOS 13.0+
